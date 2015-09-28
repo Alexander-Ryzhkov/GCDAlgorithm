@@ -52,6 +52,18 @@ namespace Logic.Test
             GCDAlgorithmInt.Euclid(int.MinValue, 0);
         }
 
+        [TestMethod]
+        public void EuclidTest_FourInts()
+        {
+            int arrange = 6;
+            int x = 48, y = 144, z = 18, w = 180;
+
+            int act = GCDAlgorithmInt.Euclid(x, y, z, w);
+
+            Assert.AreEqual(arrange, act);
+
+        }
+
 
         //
         //
@@ -97,6 +109,18 @@ namespace Logic.Test
         public void BinaryTest_OverflowException()
         {
             GCDAlgorithmInt.Binary(int.MinValue, 0);
+        }
+
+        [TestMethod]
+        public void BinaryTest_FiveInts()
+        {
+            int arrange = 13;
+            int x = 65, y = 169, z = 26, w = 182, t = 91;
+
+            int act = GCDAlgorithmInt.Binary(x, y, z, w, t);
+
+            Assert.AreEqual(arrange, act);
+
         }
     }
 }

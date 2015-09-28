@@ -39,6 +39,24 @@ namespace Logic
             return result;
         }
 
+        public static int Euclid(params int[] list)
+        {
+
+            switch (list.Length)
+            {
+                case 0:
+                    throw new ArgumentException("list is empty");
+                case 1:
+                    return list[0];
+                case 2:
+                    return Euclid(list[0], list[1]);
+                default:
+                    break;
+            }
+
+            return Euclid( Euclid( list.Take(2).ToArray() ), Euclid( list.Skip(2).ToArray() ) );
+        }
+
 
 
         public static int Binary(int x, int y)
@@ -78,6 +96,23 @@ namespace Logic
             time = timer.ElapsedTicks;
 
             return result;
+        }
+
+        public static int Binary(params int[] list)
+        {
+            switch (list.Length)
+            {
+                case 0:
+                    throw new ArgumentException("list is empty");
+                case 1:
+                    return list[0];
+                case 2:
+                    return Binary(list[0], list[1]);
+                default:
+                    break;
+            }
+
+            return Binary(Binary(list.Take(2).ToArray()), Binary(list.Skip(2).ToArray()));
         }
 
     }
