@@ -10,110 +10,103 @@ namespace Logic
     public class GCDAlgorithmInt
     {
 
+        private static double lastExecutionTime;
 
-        public static int Euclid(int x, int y)
+        public static double LastExecutionTime { get { return lastExecutionTime; } }
+
+
+        public delegate int GCDparams(params int[] args);
+        public delegate int GCD(int x, int y);
+
+
+        public static GCDparams Euclid = args => GCDTimeDiagnostic(EuclidAlgorithm, args);
+        public static GCDparams Binary = args => GCDTimeDiagnostic(BinaryAlgorithm, args);
+
+
+        private static int GCDTimeDiagnostic(GCD algorithm, params int[] args)
         {
-            x = Math.Abs(x);
-            y = Math.Abs(y);
-
-            if (x == y) return x;
-            if (x == 0) return y;
-            if (y == 0) return x;
-
-            if (x < y)
-                return Euclid(x, y % x);
-
-            return Euclid(x % y, y);
-        }
-
-        public static int Euclid(int x, int y, out long time)
-        {
-            int result;
-            Stopwatch timer = Stopwatch.StartNew();
-
-            result = Euclid(x, y);
-
-            timer.Stop();
-            time = timer.ElapsedTicks;
-
+            int result = 0;
+            Stopwatch watch = Stopwatch.StartNew();
+            result = GCDParams(algorithm, args);
+            watch.Stop();
+            lastExecutionTime = (double)watch.ElapsedTicks / Stopwatch.Frequency;
             return result;
         }
 
-        public static int Euclid(params int[] list)
+        private static int GCDParams(GCD algorithm, params int[] args)
         {
-
-            switch (list.Length)
+            if (args == null)
+                throw new ArgumentNullException("args");
+            if (args.Length == 0)
+                throw new ArgumentException("args is empty");
+            int gcd = args[0];
+            for (int i = 1; i < args.Length; i++)
             {
-                case 0:
-                    throw new ArgumentException("list is empty");
-                case 1:
-                    return list[0];
-                case 2:
-                    return Euclid(list[0], list[1]);
-                default:
-                    break;
+                gcd = algorithm(gcd, args[i]);
             }
-
-            return Euclid( Euclid( list.Take(2).ToArray() ), Euclid( list.Skip(2).ToArray() ) );
+            return gcd;
         }
 
-
-
-        public static int Binary(int x, int y)
+        private static int EuclidAlgorithm(int x, int y)
         {
+            while (y != 0)
+            {
+                x = x % y;
+                if (x == 0)
+                {
+                    x = y;
+                    break;
+                }
+                y = y % x;
+            }
+            return x > 0 ? x : -x;
+        }
+
+        public static int BinaryAlgorithm(int x, int y)
+        {
+            int shift;
+
             x = Math.Abs(x);
             y = Math.Abs(y);
 
-            if (x == y) return x;
+            /* GCD(0,y) == y; GCD(x,0) == x, GCD(0,0) == 0 */
             if (x == 0) return y;
             if (y == 0) return x;
 
-            if (x % 2 == 0)
+            /* Let shift := lg K, where K is the greatest power of 2
+                  dividing both x and y. */
+            for (shift = 0; ((x | y) & 1) == 0; ++shift)
             {
-                if (y % 2 == 0)
-                    return 2 * Binary(x / 2, y / 2);
-                else
-                    return Binary(x / 2, y);
+                x >>= 1;
+                y >>= 1;
             }
 
-            if (y % 2 == 0)
-                return Binary(x, y / 2);
+            while ((x & 1) == 0)
+                x >>= 1;
 
-            if (x > y)
-                return Binary((x - y) / 2, y);
-
-            return Binary(x, (y - x) / 2);
-        }
-
-        public static int Binary(int x, int y, out long time)
-        {
-            int result;
-            Stopwatch timer = Stopwatch.StartNew();
-
-            result = Binary(x, y);
-
-            timer.Stop();
-            time = timer.ElapsedTicks;
-
-            return result;
-        }
-
-        public static int Binary(params int[] list)
-        {
-            switch (list.Length)
+            /* From here on, x is always odd. */
+            do
             {
-                case 0:
-                    throw new ArgumentException("list is empty");
-                case 1:
-                    return list[0];
-                case 2:
-                    return Binary(list[0], list[1]);
-                default:
-                    break;
-            }
+                /* remove all factors of 2 in y -- they are not common */
+                /*   note: y is not zero, so while will terminate */
+                while ((y & 1) == 0)  /* Loop X */
+                    y >>= 1;
 
-            return Binary(Binary(list.Take(2).ToArray()), Binary(list.Skip(2).ToArray()));
+                /* Now x and y are both odd. Swap if necessary so x <= y,
+                   then set y = y - x (which is even). For bignums, the
+                   swapping is just pointer movement, and the subtraction
+                   can be done in-place. */
+                if (x > y)
+                {
+                    int t = y; y = x; x = t;
+                }  // Swap x and y.
+                y = y - x;                       // Here y >= x.
+            } while (y != 0);
+
+            /* restore common factors of 2 */
+            return x << shift;
         }
+
 
     }
 }

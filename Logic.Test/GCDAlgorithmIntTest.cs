@@ -14,10 +14,12 @@ namespace Logic.Test
         [TestMethod]
         public void EuclidTest_PositiveInts()
         {
-            int arrange = 14;
-            int x = 182, y = 238;
+            int arrange = 7;
+            int x = 91, y = 238;
 
             int act = GCDAlgorithmInt.Euclid(x, y);
+
+            Console.WriteLine(GCDAlgorithmInt.LastExecutionTime);
             Assert.AreEqual(arrange, act);
         }
         
@@ -45,12 +47,6 @@ namespace Logic.Test
 
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(OverflowException))]
-        public void EuclidTest_OverflowException()
-        {
-            GCDAlgorithmInt.Euclid(int.MinValue, 0);
-        }
 
         [TestMethod]
         public void EuclidTest_FourInts()
@@ -76,7 +72,9 @@ namespace Logic.Test
             int arrange = 7;
             int x = 91, y = 238;
 
+            
             int act = GCDAlgorithmInt.Binary(x, y);
+            Console.WriteLine(GCDAlgorithmInt.LastExecutionTime);
             Assert.AreEqual(arrange, act);
         }
 
