@@ -44,20 +44,19 @@ namespace Logic.Test
             int act = GCDAlgorithmInt.Euclid(x, y);
 
             Assert.AreEqual(arrange, act);
-
         }
 
 
         [TestMethod]
-        public void EuclidTest_FourInts()
+        public void EuclidTest_FiveInts()
         {
-            int arrange = 6;
-            int x = 48, y = 144, z = 18, w = 180;
+            int arrange = 13;
+            int x = 65, y = 169, z = 26, w = 182, t = 91;
 
-            int act = GCDAlgorithmInt.Euclid(x, y, z, w);
+            int act = GCDAlgorithmInt.Euclid(x, y, z, w, t);
 
+            Console.WriteLine(GCDAlgorithmInt.LastExecutionTime);
             Assert.AreEqual(arrange, act);
-
         }
 
 
@@ -117,6 +116,7 @@ namespace Logic.Test
 
             int act = GCDAlgorithmInt.Binary(x, y, z, w, t);
 
+            Console.WriteLine(GCDAlgorithmInt.LastExecutionTime);
             Assert.AreEqual(arrange, act);
 
         }
